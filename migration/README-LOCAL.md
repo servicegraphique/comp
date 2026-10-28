@@ -1,6 +1,6 @@
 # Lancer les landing pages localement
 
-Les pages statiques prêtes à tester se trouvent dans `migration/sites/` : **131 pages**, chacune dans son propre dossier avec `index.html`, `style.css`, `script.js`, `img/` et, si nécessaire, `fonts/` et `videos/`. Le dépôt source (les exports Webflow d'origine) reste intact.
+Les pages statiques prêtes à tester se trouvent dans `migration/sites/` : **138 pages**, chacune dans son propre dossier avec `index.html`, `style.css`, `script.js`, `img/` et, si nécessaire, `fonts/` et `videos/`. Le dépôt source (les exports Webflow d'origine) reste intact. Les 7 pages de template/test du dépôt sont également exportées sous `migration/sites/`.
 
 ## Démarrage — le plus simple
 
@@ -17,15 +17,15 @@ Autre possibilité : ouvrir directement `migration/sites/<slug>/index.html` dans
 ## Ce qui est déjà local
 
 - Le HTML des pages converties, le CSS (dont les styles Webflow nécessaires), le JavaScript, les images, les polices et les vidéos disponibles sont embarqués au niveau de chaque page.
-- jQuery et le runtime Webflow nécessaires aux interactions exportées sont servis depuis les fichiers locaux; les fichiers ne chargent pas jQuery ni le runtime depuis un CDN Webflow.
-- Les références d'affichage aux CDN Webflow / Google Fonts ont été rapatriées. Le catalogue et le code de recherche fonctionnent aussi sans CDN.
+- Les interactions historiques Webflow continuent de fonctionner à partir du runtime compatible livré dans le `script.js` propre à chaque page; jQuery et ce runtime ne sont pas chargés depuis un CDN.
+- Les ressources d'affichage Webflow/Google Fonts sont locales. Les loaders Google Fonts et Google Tag Manager/analytics ont été désactivés dans la copie locale. Le catalogue et sa recherche fonctionnent sans CDN.
 - Chaque LP peut être copiée et hébergée indépendamment depuis son dossier.
 
 ## Limites à connaître
 
-« Fonctionner localement » couvre le rendu et les interactions front-end exportées, mais ne transforme pas les services en ligne en services locaux. Les formulaires pouvant envoyer des leads, SMS/OTP, CRM, Google Sheets/Apps Script, Google Tag Manager/analytics, vidéos hébergées par des tiers et liens de partenaires dépendent encore de leurs services distants; certains nécessitent Internet, une configuration d'origine/CORS ou un compte. Ils n'ont pas été remplacés par des réponses simulées, afin de ne pas perdre ni falsifier des soumissions réelles. **Ne testez pas un formulaire de production avec des données réelles.** Une vraie exécution hors ligne de ces fonctions nécessiterait des API de remplacement locales et un environnement de test dédié.
+Le rendu et les interactions front-end sont locaux, mais les services en ligne ne deviennent pas des services locaux. Les envois CRM, SMS/OTP et Google Sheets/Apps Script gardent leurs API réelles et exigent réseau, configuration d'origine/CORS et autorisation. Ils ne sont pas simulés; **ne testez pas un formulaire avec des données réelles**. Le tracking GTM/gtag est retiré localement. Une vidéo YouTube sur Primagaz reste la seule ressource d'affichage distante identifiée et ne sera pas lisible hors ligne. Les liens de navigation partenaires restent externes par nature.
 
-Les 7 templates/pages de test du dépôt source ne sont pas convertis en LP : `nicolas/ayvens.html`, `nicolas/form-test.html`, `nicolas/formly.html`, `temlpate-webflow/comparateur-2.html`, `comparateur-3.html`, `comparateur-4.html` et `webflow/template-1.html`. L'export source `sites/assurance-tns/index.html` est un doublon du pilote déjà converti sous `migration/sites/assurance-tns/`. Les vidéos citées dans `MISSING.txt` n'ont pas pu être embarquées; les rapports par site consignent les alertes connues.
+L’export source `sites/assurance-tns/index.html` correspond au pilote historique déjà présent sous `migration/sites/assurance-tns/`; il n’est pas compté deux fois. Les médias absents de l’export original restent notés dans `MISSING.txt` et les rapports individuels.
 
 ## Vérification
 

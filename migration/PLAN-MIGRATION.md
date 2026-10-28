@@ -35,7 +35,7 @@ et la possibilité d'archiver/nettoyer le dépôt d'origine.
 | 1 | **`index.html` / `style.css` / `script.js` / `img/` (+ `fonts/` si besoin)** | Structure demandée, standard, compréhensible par n'importe quel développeur ou intégrateur. |
 | 2 | **Zéro requête CDN pour l'affichage** : tout asset visuel est rapatrié | Autonomie réelle ; le site rend identiquement même si le CDN Webflow est coupé ou le compte fermé. |
 | 3 | **`script.js` = jQuery + webflow.js + scripts inline, dans l'ordre d'origine**, chargé en `defer` avant `</body>` | Le runtime Webflow est nécessaire (interactions IX2, formulaires, lazy-load). Ne pas le réécrire : on migre, on ne refactore pas. |
-| 4 | **GTM et `dataLayer` restent inline dans `<head>`** | Position critique pour le tracking ; on n'y touche pas (c'est un choix volontaire, pas un oubli). |
+| 4 | **Tracking désactivé dans les exports locaux** : GTM, Google Fonts loader et gtag n'engendrent pas de requêtes navigateur | Ces scripts ne sont pas nécessaires au rendu; les API métier et liens externes restent identifiés séparément. |
 | 5 | **Endpoints métier (CRM hellolead, SMS, Apps Script) inchangés** | La migration est purement statique. Les questions de sécurité serveur (rate-limiting) restent un chantier backend séparé — rappel P0 de l'audit. |
 | 6 | **Purge CSS conservatrice** : 1,1 Mo → ~175 Ko | Un sélecteur est conservé au moindre doute (classes utilisées, classes pilotées par webflow.js/IX2, préfixes `w-`). Garde-fou automatique : si une classe stylée disparaît, on conserve la CSS complète. |
 | 7 | **`srcset` responsive conservé** (variantes p-500/p-800…) | Ce sont des images déjà optimisées par Webflow — les garder ne coûte que quelques fichiers et préserve le Lighthouse mobile. |
@@ -71,8 +71,7 @@ Options : `--limit N` (échantillon), `--no-purge`, `--no-selfhost-fonts`.
 Pipeline interne (chaque page) :
 
 1. **Collecte** de la page et de ses CSS (liens + `<style>` inline) dans l'ordre cascade.
-2. **Extraction des scripts** : externes (jQuery CDN, `js/webflow.js`) + inline (sauf GTM,
-   `dataLayer` compact et JSON-LD qui restent en place).
+2. **Extraction des scripts** : les bibliothèques indispensables (jQuery, `js/webflow.js`, Inputmask) sont intégrées localement; GTM/gtag, Google Fonts WebFont loader et chat tiers non essentiels sont retirés de la copie locale; JSON-LD reste en place.
 3. **Purge CSS conservatrice** partie par partie (garde-fou anti-régression intégré).
 4. **Nettoyage** des `@font-face` cassées des exports Webflow (src `.zip`,
    `format "undefined"`) — bug d'export qui laissait des références mortes.
@@ -91,21 +90,21 @@ Pipeline interne (chaque page) :
 
 | Vague | Contenu | Volume | Durée |
 |---|---|---|---|
-| **0 — Batch automatique** | ✅ **FAIT** : 131 pages converties d'un coup par `--all` (0 échec) | 131 | ~20 min |
+| **0 — Conversion complète** | ✅ **FAIT** : 138 exports HTML convertis en dossiers autonomes (131 LP + 7 templates/tests) | 138 | ~20 min |
 | **1 — QA pilote élargi** | vérification humaine des 12 sites prioritaires (dossier `sites/`) | 12 | 2-3 jours |
 | **2 — QA cœur métier** | reste des LP métier + typ | ~60 | 1,5-2 semaines |
 | **3 — Marques** | 22 LP véhicules (avec vérification droits marques, §7) | 22 | 1 semaine |
 | **4 — Rangement** | fusion des thank-you pages, archivage des 27 variantes | 36 | 2 jours |
 
-> ⚠ **Contrainte de stockage** : le parc complet fait **~989 Mo / ~7 500 fichiers**.
-> Le dossier `sites/` de cet espace de travail ne contient que les 12 sites
-> prioritaires (~74 Mo) — le reste se régénère à l'identique avec la commande
-> `--all` ci-dessus (sur votre machine ou via moi, `--resume` permet de continuer
-> au fil des sessions). Les 131 rapports de conversion sont dans `rapports/`.
+> **État courant (28/10/2026)** : les 138 dossiers complets sont présents dans
+> `migration/sites/` (~1,03 Go). Le catalogue filtrable est généré par
+> `python3 migration/generer-catalogue.py`; les rapports individuels sont dans chaque dossier.
+> La conversion est idempotente et peut reprendre avec `--resume`.
 
-**QA obligatoire par site** (cf. `rapport-site.md` généré) : comparaison visuelle côte à
-côte avec l'original, parcours formulaire complet, OTP SMS sur numéro de test, lead reçu
-en CRM/Sheets, Tag Assistant (`formulaire_lead`), Lighthouse mobile, relecture title/description.
+**QA restante** (cf. `RAPPORT-MIGRATION.md`) : comparaison visuelle navigateur par navigateur,
+parcours formulaire réel sur API de test, OTP SMS avec numéro autorisé, réception CRM/Sheets,
+responsive/Lighthouse et relecture title/description. Le tracking GTM/gtag est désactivé
+uniquement dans les copies locales; ne pas utiliser Tag Assistant sur cette version.
 
 ## 5. Hébergement & déploiement
 
@@ -145,4 +144,5 @@ endpoints, contrôle d'accès Apps Script, et décision sur la visibilité du d�
 | Canonical / robots / sitemap | absents | **présents** |
 | H1 | 9 | **1** (démotion neutre des 8 autres) |
 | Références cassées | 0 | **0** (vérifiée automatiquement) |
-| GTM + formulaire + OTP SMS | ✓ | **identiques, intacts** |
+| Tracking | GTM actif sur l'origine | **désactivé localement**; événements non envoyés |
+| Formulaires + OTP SMS | APIs de production | appels conservés, exécution réelle nécessite réseau/configuration CORS |

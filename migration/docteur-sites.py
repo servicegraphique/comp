@@ -91,7 +91,12 @@ def isolate_chunks(header, chunks):
     groups, current, declared = [], [], set()
     for ch in chunks:
         names = top_level_names(ch)
-        if current and references_any(ch, declared):
+        # Des scripts indépendants peuvent redéclarer le même const/let.
+        # Il faut alors les placer dans des scopes distincts, pas les fusionner.
+        if current and names.intersection(declared):
+            groups.append(current)
+            current = [ch]
+        elif current and references_any(ch, declared):
             current.append(ch)
         else:
             if current:

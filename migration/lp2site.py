@@ -19,7 +19,7 @@ classique totalement autonome :
 Principes :
   - AUCUNE dépendance résiduelle aux CDN Webflow (images/JS/CSS rapatriés).
   - Purge CSS conservatrice (un sélecteur est conservé au moindre doute).
-  - Le tracking (GTM) et les endpoints métier (CRM/SMS) restent INTACTS.
+  - GTM/gtag est désactivé dans les exports locaux; les endpoints métier (CRM/SMS) restent intacts.
   - Dépendances : Python 3.8+ standard uniquement.
 
 Usage :
@@ -55,7 +55,6 @@ IMG_EXT = {'.png', '.jpg', '.jpeg', '.webp', '.avif', '.gif', '.svg', '.ico'}
 FONT_EXT = {'.woff', '.woff2', '.ttf', '.otf', '.eot'}
 VID_EXT = {'.mp4', '.webm', '.ogg', '.mov'}
 
-GTM_MARKERS = ('googletagmanager', 'dataLayer', 'gtag(')
 KEEP_INLINE_TYPES = {'application/ld+json', 'application/json'}
 
 _log_indent = 0
@@ -89,6 +88,20 @@ def fetch(url, binary=True, timeout=40):
 
 def repo_url(path):
     return RAW_BASE + urllib.parse.quote(path.lstrip('/'), safe='/')
+
+
+def fetch_repo_file(path):
+    """Lit d'abord l'export présent dans le dépôt de travail; utilise GitHub
+    comme secours seulement si le fichier n'existe pas localement. Cela permet
+    de convertir hors ligne les exports et leurs assets déjà commités."""
+    decoded = urllib.parse.unquote(str(path)).replace('\\', '/')
+    relative = os.path.normpath(decoded.lstrip('/'))
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    local_path = os.path.realpath(os.path.join(repo_root, relative))
+    if (local_path.startswith(repo_root + os.sep) and os.path.isfile(local_path)):
+        with open(local_path, 'rb') as asset:
+            return asset.read()
+    return fetch(repo_url(relative))
 
 
 def normalize_repo_path(p, base_dir):
@@ -296,7 +309,23 @@ class AssetStore:
         last_err = None
         for k in candidates:
             try:
-                data = fetch(k if k.startswith('http') else repo_url(k))
+                if k.startswith('http'):
+                    remote_name = slugify(os.path.basename(urllib.parse.unquote(urllib.parse.urlparse(k).path)))
+                    static_name = os.path.basename(urllib.parse.urlparse(k).path)
+                    local_static = os.path.join('migration', 'vendor', 'webflow-static', static_name)
+                    existing_media = os.path.join(self.outdir, 'videos', remote_name)
+                    if not os.path.isfile(existing_media) and remote_name.endswith(('.mp4', '.webm')):
+                        alternate = remote_name.replace('~', '-')
+                        existing_media = os.path.join(self.outdir, 'videos', alternate)
+                    if os.path.isfile(local_static):
+                        data = fetch_repo_file(local_static)
+                    elif os.path.isfile(existing_media):
+                        with open(existing_media, 'rb') as media:
+                            data = media.read()
+                    else:
+                        data = fetch(k)
+                else:
+                    data = fetch_repo_file(k)
                 break
             except Exception as e:
                 last_err = e
@@ -360,16 +389,61 @@ def rewrite_srcset(value, base_dir, store):
     return ', '.join(out)
 
 
+LOCAL_IFRAME_TARGETS = {
+    'https://www.ubepro.com/assurance-consultant-conseil-v2/': '../assurance-consultants-societe-conseil/',
+    'https://www.ubepro.com/assurance-estheticiennes-institut-beaute/': '../assurance-estheticiennes-institut-beaute/',
+    'https://www.comparateurpro.fr/typ-formulaires/vehicules-thank-you-page': '../typ-formulaires-vehicules-thank-you-page/',
+    'https://www.comparateurpro.fr/typ-formulaires/securite-thank-you-page': '../typ-formulaires-securite-thank-you-page/',
+    'https://www.comparateurpro.fr/typ-formulaires/energie-thank-you-page': '../typ-formulaires-energie-thank-you-page/',
+    'https://www.comparateurpro.fr/typ-formulaires/panneaux-thank-you-page': '../typ-formulaires-panneaux-thank-you-page/',
+    'https://www.comparateurpro.fr/typ-formulaires/caisses-thank-you-page': '../typ-formulaires-caisses-thank-you-page/',
+    'https://www.comparateurpro.fr/typ-formulaires/typ-log-entreprise': '../typ-formulaires-typ-log-entreprise/',
+}
+
+
+def localize_legal_links(html):
+    """Les pages légales exportées dans le lot remplacent les liens vers le domaine live."""
+    pages = {
+        '/mentions-legales': '../mentions-legales/',
+        '/politique-de-confidentialite-donnees-personnelles': '../politique-de-confidentialite-donnees-personnelles/',
+    }
+    def rewrite_anchor(match):
+        url = html_mod.unescape(match.group(2))
+        if not url.startswith(('http://', 'https://')):
+            return match.group(0)
+        parsed = urllib.parse.urlsplit(url)
+        host = (parsed.hostname or '').lower()
+        if host not in {'www.hellolead.pro', 'hellolead.pro', 'www.comparateurpro.fr', 'comparateurpro.fr'}:
+            return match.group(0)
+        target = pages.get(parsed.path.rstrip('/'))
+        if not target:
+            return match.group(0)
+        local = target + (('?' + parsed.query) if parsed.query else '') + (('#' + parsed.fragment) if parsed.fragment else '')
+        return match.group(1) + local + match.group(3)
+    return re.sub(r'(<a\b[^>]*\bhref=")([^"]+)("[^>]*>)', rewrite_anchor, html, flags=re.I)
+
+
 def rewrite_html_assets(html, base_dir, store):
     # attributs simples
     def attr_repl(m):
         val = m.group(2)
+        if m.group(1) == 'src' and val in LOCAL_IFRAME_TARGETS:
+            return m.group(1) + '="' + LOCAL_IFRAME_TARGETS[val] + '"'
         key = resolve_key(val, base_dir)
         if key and key in store.mapping:
             return m.group(1) + '="' + store.mapping[key] + '"'
         return m.group(0)
     html = re.sub(r'\b(src|href|poster|data-poster-url|data-src|content)\s*=\s*"([^"]*)"',
                   attr_repl, html)
+    # Arrière-plans vidéo Webflow : data-video-urls contient une liste d'URLs.
+    def video_urls_repl(m):
+        urls = [u.strip() for u in m.group(2).split(',')]
+        local = []
+        for url in urls:
+            key = resolve_key(url, base_dir)
+            local.append(store.mapping.get(key, url))
+        return m.group(1) + '="' + ','.join(local) + '"'
+    html = re.sub(r'\b(data-video-urls)\s*=\s*"([^"]*)"', video_urls_repl, html)
     # srcset / data-srcset
     def ss_repl(m):
         return m.group(1) + '="' + rewrite_srcset(m.group(2), base_dir, store) + '"'
@@ -395,6 +469,11 @@ def collect_refs(html, base_dir):
             k = resolve_key(m.group(1), base_dir)
             if k:
                 refs.append(k)
+    for m in re.finditer(r'\bdata-video-urls\s*=\s*"([^"]*)"', html):
+        for url in m.group(1).split(','):
+            key = resolve_key(url.strip(), base_dir)
+            if key:
+                refs.append(key)
     for m in re.finditer(r'\b(?:srcset|data-srcset)\s*=\s*"([^"]*)"', html):
         for tok in m.group(1).split(','):
             tok = tok.strip().split()
@@ -580,13 +659,19 @@ def build_script_js(script_chunks):
     chunks = [c for _, c in script_chunks]
     groups, current, declared = [], [], set()
     for ch in chunks:
-        if current and any(re.search(r'\b' + re.escape(n) + r'\b', ch) for n in declared):
+        names = _top_level_names(ch)
+        # Separate original script blocks can redeclare the same lexical name.
+        # Never concatenate such blocks into one JavaScript scope.
+        if current and names.intersection(declared):
+            groups.append(current)
+            current = [ch]
+        elif current and any(re.search(r'\b' + re.escape(n) + r'\b', ch) for n in declared):
             current.append(ch)
         else:
             if current:
                 groups.append(current)
             current = [ch]
-        declared |= _top_level_names(ch)
+        declared |= names
     if current:
         groups.append(current)
     out = ['/* script.js — jQuery + webflow.js + scripts de la page (ordre conservé,\n'
@@ -624,7 +709,7 @@ def convert(page, slug, outdir, domain, do_purge=True, selfhost_fonts=True):
     warnings, notes = [], []
 
     log(f"▸ Conversion de « {page} » → site « {slug} »")
-    html = fetch(repo_url(page)).decode('utf-8', 'replace')
+    html = fetch_repo_file(page).decode('utf-8', 'replace')
     orig_len = len(html)
 
     # ---------- 1. Feuilles de style (liens + <style> inline) ----------
@@ -648,7 +733,7 @@ def convert(page, slug, outdir, domain, do_purge=True, selfhost_fonts=True):
             href = re.search(r'href\s*=\s*"([^"]+)"', m.group(0)).group(1)
             key = resolve_key(href, base_dir)
             try:
-                txt = fetch(repo_url(key)).decode('utf-8', 'replace')
+                txt = fetch_repo_file(key).decode('utf-8', 'replace')
                 css_parts.append((m.start(), txt, os.path.dirname(key)))
             except Exception as e:
                 warnings.append(f"CSS introuvable : {key} ({e})")
@@ -659,8 +744,7 @@ def convert(page, slug, outdir, domain, do_purge=True, selfhost_fonts=True):
                     txt = fetch(href).decode('utf-8', 'replace')
                     gfonts_css += txt + '\n'
                 except Exception as e:
-                    warnings.append(f"Google Fonts non récupérable ({e}) → lien conservé")
-                    css_parts.append((m.start(), f"@import url('{href}');", base_dir))
+                    warnings.append(f"Google Fonts non récupérable ({e}) → police de secours locale utilisée")
             else:
                 css_parts.append((m.start(), f"@import url('{href}');", base_dir))
 
@@ -680,19 +764,45 @@ def convert(page, slug, outdir, domain, do_purge=True, selfhost_fonts=True):
         typ = typ.group(1).strip().lower() if typ else ''
         if src:
             key = resolve_key(src.group(1), base_dir)
+            url = str(key or '').lower()
+            script_tags_to_remove.append(m)
+            # Elimine les appels de tracking et auto-héberge/remplace les bibliothèques courantes.
+            if any(host in url for host in ('googletagmanager.com', 'ajax.googleapis.com')):
+                continue
+            if 'smartarget.online' in url:
+                warnings.append('widget de chat Smartarget désactivé localement (service tiers requis)')
+                continue
+            local_vendors = {
+                'jquery.inputmask': 'migration/vendor/jquery.inputmask-5.0.9.min.js',
+                'jquery-3.5.1.min': 'migration/vendor/jquery-3.5.1.min.js',
+                'videsigns/webflow-tools': 'migration/vendor/native-multistep.js',
+                'lumious-components': 'migration/vendor/lumious-ticker.min.js',
+            }
+            vendor = next((path for marker, path in local_vendors.items() if marker in url), None)
             try:
-                content = fetch(key if key.startswith('http') else repo_url(key)).decode('utf-8', 'replace')
+                if vendor:
+                    content = fetch_repo_file(vendor)
+                elif '/js/webflow.js' in url or url.endswith('/webflow.js'):
+                    content = fetch_repo_file('js/webflow.js')
+                elif key.startswith('http'):
+                    content = fetch(key)
+                else:
+                    content = fetch_repo_file(key)
+                content = content.decode('utf-8', 'replace')
                 script_chunks.append((m.start(), content))
-                script_tags_to_remove.append(m)
                 if 'async' in attrs:
                     warnings.append("script externe en async → ordre de concaténation à vérifier")
             except Exception as e:
-                warnings.append(f"script externe introuvable : {src.group(1)} ({e})")
+                warnings.append(f"script retiré, dépendance locale manquante : {src.group(1)} ({e})")
         else:
             if typ in KEEP_INLINE_TYPES:
                 continue  # JSON-LD etc. → reste en place
-            if 'googletagmanager' in body:
-                continue  # loader GTM → reste en place (position critique)
+            if 'googletagmanager' in body.lower() or re.search(r"gtag\s*\(\s*['\"](?:config|js)['\"]", body):
+                script_tags_to_remove.append(m)  # GTM/gtag ne sont pas requis au rendu local
+                continue
+            if 'WebFont.load' in body and 'google' in body.lower():
+                script_tags_to_remove.append(m)  # les polices locales remplacent Google Fonts
+                continue
             uses_jquery = bool(re.search(r'\$\(|\bjQuery\b', body))
             if ('dataLayer' in body or 'gtag(' in body) and len(body) < 2000 and not uses_jquery:
                 continue  # init dataLayer compact → reste en place
@@ -800,8 +910,12 @@ def convert(page, slug, outdir, domain, do_purge=True, selfhost_fonts=True):
     for start, end, txt in edits:
         html = html[:start] + txt + html[end:]
 
-    # assets du HTML
+    # assets du HTML et liens légaux entre pages du même export
     html = rewrite_html_assets(html, base_dir, store)
+    html = localize_legal_links(html)
+    # GTM n'est pas utile au rendu local et provoque des appels externes.
+    html = re.sub(r'<noscript\b[^>]*>\s*<iframe\b[^>]*googletagmanager[^>]*>.*?</iframe>\s*</noscript>',
+                  '', html, flags=re.I | re.S)
 
     # nettoyage : commentaires de générateur Webflow
     html = re.sub(r'<!--\s*This site was created in Webflow\.[^>]*?-->\s*'
@@ -994,7 +1108,7 @@ def write_report(site, slug, page, domain, store, warnings, seo_added,
         "2. Parcours complet du formulaire (toutes les étapes, champs obligatoires, erreurs).",
         "3. Test OTP SMS avec un numéro de test.",
         "4. Vérification de la réception du lead en CRM / Google Sheets.",
-        "5. Tag Assistant : déclenchement GTM et de l'événement `formulaire_lead`.",
+        "5. GTM/gtag est volontairement absent de l'export local; valider le tracking séparément sur l'environnement de production.",
         "6. Lighthouse mobile : performance et accessibilité.",
         "7. Relire meta description (générée automatiquement) et titre.",
         "",
@@ -1118,6 +1232,21 @@ def dir_size(path):
 
 
 def list_repo_pages():
+    """Inventorie d'abord les exports HTML présents localement (offline-first).
+    L'API GitHub reste un secours pour les usages historiques sans checkout complet."""
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    local_pages = []
+    for current, dirs, files in os.walk(repo_root):
+        rel = os.path.relpath(current, repo_root).replace('\\\\', '/')
+        if rel == '.':
+            dirs[:] = [d for d in dirs if d not in {'.git', 'migration', 'sites'}]
+        else:
+            dirs[:] = [d for d in dirs if d != '.git']
+        for name in files:
+            if name.lower().endswith('.html'):
+                local_pages.append(os.path.relpath(os.path.join(current, name), repo_root).replace('\\\\', '/'))
+    if local_pages:
+        return sorted(local_pages)
     api = ('https://api.github.com/repos/manajahelvin-ux/comparateur/'
            'git/trees/main?recursive=1')
     data = json.loads(fetch(api))

@@ -130,7 +130,7 @@ g,0<d.length&&(d=Aa[d[0]])&&(a.c[e]=d))}a.c[e]||(d=Aa[e])&&(a.c[e]=d);for(d=0;d<
 ;
 /* chunk 1 */
 try {
-WebFont.load({  google: {    families: ["Open Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic","Varela:400","Merriweather:300,300italic,400,400italic,700,700italic,900,900italic","Ubuntu:300,300italic,400,400italic,500,500italic,700,700italic","PT Serif:400,400italic,700,700italic","Varela Round:400","Great Vibes:400","Vollkorn:400,400italic,700,700italic","Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic","Oswald:200,300,400,500,600,700","Exo:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic","Lato:100,100italic,300,300italic,400,400italic,700,700italic,900,900italic","Changa One:400,400italic","Alegreya:300,400,500,600,700","Alegreya Sans:300,400,500,600,700","Inter:300,400,500,600,700","Montserrat Alternates:300,400,500,600,700","Montserrat Alternates:300,400,500,600,700","Poppins:300,400,500,600,700","Prompt:300,400,500,600,700","Roboto:300,400,500,600,700","Roboto:300,400,500,600,700","Sora:100,200,300,400,500,600,700,800","Source Sans 3:300,400,500,600,700","Ubuntu Sans:300,400,500,600,700","Work Sans:300,400,500,600,700"]  }});
+/* Google WebFont CDN loader removed; font CSS/assets are local. */
 ;
 !function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);
 ;

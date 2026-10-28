@@ -32,7 +32,7 @@ acces-internet-et-telephonie-pro-v2.lp.comparateurpro.fr, www.hellolead.pro
 2. Parcours complet du formulaire (toutes les étapes, champs obligatoires, erreurs).
 3. Test OTP SMS avec un numéro de test.
 4. Vérification de la réception du lead en CRM / Google Sheets.
-5. Tag Assistant : déclenchement GTM et de l'événement `formulaire_lead`.
+5. GTM/gtag est volontairement absent de l'export local; valider le tracking séparément sur l'environnement de production.
 6. Lighthouse mobile : performance et accessibilité.
 7. Relire meta description (générée automatiquement) et titre.
 
