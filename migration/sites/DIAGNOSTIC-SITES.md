@@ -1,6 +1,6 @@
-# Diagnostic des sites — 2026-10-22
+# Diagnostic des sites — 2026-10-28
 
-Dossier : `sites` — 131 sites — 0 réparation(s) appliquée(s)
+Dossier : `migration/sites` — 131 sites — vérification seule
 
 | Site | Réparations appliquées | Alertes restantes | État |
 |---|---|---|---|
@@ -63,7 +63,7 @@ Dossier : `sites` — 131 sites — 0 réparation(s) appliquée(s)
 | `hyundai-tucson` | — | — | ✔ |
 | `intuis` | — | — | ✔ |
 | `lexus-lbx` | — | — | ✔ |
-| `lexus-lbx-2` | — | reference cassee: ../images/conso-1_1conso-1.png | ⚠ |
+| `lexus-lbx-2` | — | — | ✔ |
 | `mentions-legales` | — | — | ✔ |
 | `mercedes-benz-mercedes-benz-evito` | — | — | ✔ |
 | `mercedes-benz-nouvel-ecitan-fourgon` | — | — | ✔ |
@@ -113,7 +113,7 @@ Dossier : `sites` — 131 sites — 0 réparation(s) appliquée(s)
 | `tns-prevoyance-v2-adw-test` | — | — | ✔ |
 | `too-good-to-go` | — | — | ✔ |
 | `toyota-gamme-hybride` | — | — | ✔ |
-| `typ-categ` | — | reference cassee: images/2-1_12-1.png | ⚠ |
+| `typ-categ` | — | — | ✔ |
 | `typ-categories` | — | — | ✔ |
 | `typ-energie` | — | — | ✔ |
 | `typ-formulaires-caisses-thank-you-page` | — | — | ✔ |
@@ -436,7 +436,7 @@ Dossier : `sites` — 131 sites — 0 réparation(s) appliquée(s)
 ### `lexus-lbx-2`
 - banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
-- Alertes : reference cassee: ../images/conso-1_1conso-1.png
+- Alertes : aucune
 
 ### `mentions-legales`
 - banniere cookies: non; GTM: absent; description: oui; H1: 0
@@ -686,7 +686,7 @@ Dossier : `sites` — 131 sites — 0 réparation(s) appliquée(s)
 ### `typ-categ`
 - banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
-- Alertes : reference cassee: images/2-1_12-1.png
+- Alertes : aucune
 
 ### `typ-categories`
 - banniere cookies: non; GTM: absent; description: oui; H1: 0
@@ -799,7 +799,7 @@ Les formulaires et la bannière nécessitent un serveur HTTP local
 (pas d'ouverture en double-clic file://) :
 
 ```bash
-cd sites
+cd migration/sites
 python -m http.server 8080
 ```
 
