@@ -1,6 +1,6 @@
 # Diagnostic des sites — 2026-10-28
 
-Dossier : `migration/sites` — 131 sites — vérification seule
+Dossier : `migration/sites` — 138 sites — vérification seule
 
 | Site | Réparations appliquées | Alertes restantes | État |
 |---|---|---|---|
@@ -72,6 +72,9 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 | `mitsubishi-fuso` | — | — | ✔ |
 | `mitsubishi-fuso-remerciement` | — | — | ✔ |
 | `nettoyage-locaux-professionnels` | — | — | ✔ |
+| `nicolas-ayvens` | — | — | ✔ |
+| `nicolas-form-test` | — | — | ✔ |
+| `nicolas-formly` | — | — | ✔ |
 | `nissan-ariya` | — | — | ✔ |
 | `nissan-juke` | — | — | ✔ |
 | `panneaux-photovoltaiques-energie-solaire` | — | — | ✔ |
@@ -103,6 +106,9 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 | `solutions-industrielles-cles-en-main` | — | — | ✔ |
 | `still-manutention` | — | — | ✔ |
 | `suivi-de-vehicules` | — | — | ✔ |
+| `temlpate-webflow-comparateur-2` | — | — | ✔ |
+| `temlpate-webflow-comparateur-3` | — | — | ✔ |
+| `temlpate-webflow-comparateur-4` | — | — | ✔ |
 | `template-2` | — | — | ✔ |
 | `ticket-restaurant` | — | — | ✔ |
 | `ticket-restaurant-` | — | — | ✔ |
@@ -135,6 +141,7 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 | `voiture-nouveau-range-rover` | — | — | ✔ |
 | `voiture-range-rover` | — | — | ✔ |
 | `volvo` | — | — | ✔ |
+| `webflow-template-1` | — | — | ✔ |
 
 ## Détails par site
 
@@ -164,27 +171,27 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `assurance-agriculteur`
-- banniere cookies: oui; GTM: GTM-53SH7D7F; description: oui; H1: 1
+- banniere cookies: oui; GTM: absent; description: oui; H1: 1
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-agriculteur-v2`
-- banniere cookies: non; GTM: GTM-53SH7D7F; description: oui; H1: 9
+- banniere cookies: non; GTM: absent; description: oui; H1: 9
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-assurance-professionnelle-iard-cookie`
-- banniere cookies: oui; GTM: GTM-53SH7D7F; description: oui; H1: 0
+- banniere cookies: oui; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-assurance-professionnelle-iard-v2`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-commerce`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
@@ -194,17 +201,17 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `assurance-consultants-societe-conseil`
-- banniere cookies: oui; GTM: GTM-53SH7D7F; description: oui; H1: 0
+- banniere cookies: oui; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-estheticienne-institut-beaute`
-- banniere cookies: oui; GTM: GTM-53SH7D7F; description: oui; H1: 0
+- banniere cookies: oui; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-estheticiennes-institut-beaute`
-- banniere cookies: non; GTM: GTM-53SH7D7F; description: oui; H1: 1
+- banniere cookies: non; GTM: absent; description: oui; H1: 1
 - Réparations : aucune
 - Alertes : aucune
 
@@ -214,47 +221,47 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `assurance-estheticiennes-instituts-beaute-v1`
-- banniere cookies: oui; GTM: GTM-53SH7D7F; description: oui; H1: 0
+- banniere cookies: oui; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-iard-v2`
-- banniere cookies: oui; GTM: GTM-53SH7D7F; description: oui; H1: 17
+- banniere cookies: oui; GTM: absent; description: oui; H1: 17
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-marchandise`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-multirisques`
-- banniere cookies: non; GTM: GTM-53SH7D7F; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-professionnelle-iard`
-- banniere cookies: oui; GTM: GTM-53SH7D7F; description: oui; H1: 0
+- banniere cookies: oui; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-professionnelle-tns-v2`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-protection-sociale-collective`
-- banniere cookies: oui; GTM: GTM-53SH7D7F; description: oui; H1: 0
+- banniere cookies: oui; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-protection-sociale-collective-v4`
-- banniere cookies: non; GTM: GTM-53SH7D7F; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-rc-pro`
-- banniere cookies: non; GTM: GTM-53SH7D7F; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
@@ -264,17 +271,17 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `assurance-tns`
-- banniere cookies: oui; GTM: GTM-53SH7D7F; description: oui; H1: 9
+- banniere cookies: oui; GTM: absent; description: oui; H1: 9
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurance-tns-pro-v2-adw`
-- banniere cookies: oui; GTM: GTM-53SH7D7F; description: oui; H1: 0
+- banniere cookies: oui; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `assurances-multirisques-v2`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
@@ -309,7 +316,7 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `complementaire-retraite-tns-v2`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
@@ -349,12 +356,12 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `energie`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `energie-v2`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
@@ -399,7 +406,7 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `geolocalisation`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
@@ -409,7 +416,7 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `geolocalisation-v2`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
@@ -478,6 +485,21 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Réparations : aucune
 - Alertes : aucune
 
+### `nicolas-ayvens`
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
+- Réparations : aucune
+- Alertes : aucune
+
+### `nicolas-form-test`
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
+- Réparations : aucune
+- Alertes : aucune
+
+### `nicolas-formly`
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
+- Réparations : aucune
+- Alertes : aucune
+
 ### `nissan-ariya`
 - banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
@@ -489,7 +511,7 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `panneaux-photovoltaiques-energie-solaire`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
@@ -554,27 +576,27 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `remerciement-carte-cadeau`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `remerciement-panneaux-solaire`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `remerciement-ticket-restaurant`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `remerciement-ticket-restaurant-v2`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `remerciements-panneaux-solaires`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
@@ -604,7 +626,7 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `securite-professionnels`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
@@ -629,6 +651,21 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `suivi-de-vehicules`
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
+- Réparations : aucune
+- Alertes : aucune
+
+### `temlpate-webflow-comparateur-2`
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
+- Réparations : aucune
+- Alertes : aucune
+
+### `temlpate-webflow-comparateur-3`
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
+- Réparations : aucune
+- Alertes : aucune
+
+### `temlpate-webflow-comparateur-4`
 - banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
@@ -664,12 +701,12 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `tns-prevoyance-v2`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
 ### `tns-prevoyance-v2-adw-test`
-- banniere cookies: non; GTM: GTM-WMVZJKS; description: oui; H1: 0
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune
 
@@ -789,6 +826,11 @@ Dossier : `migration/sites` — 131 sites — vérification seule
 - Alertes : aucune
 
 ### `volvo`
+- banniere cookies: non; GTM: absent; description: oui; H1: 0
+- Réparations : aucune
+- Alertes : aucune
+
+### `webflow-template-1`
 - banniere cookies: non; GTM: absent; description: oui; H1: 0
 - Réparations : aucune
 - Alertes : aucune

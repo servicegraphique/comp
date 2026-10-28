@@ -4,45 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Consentement Google : refus par défaut, puis mise à jour depuis les préférences enregistrées. -->
-  <script>
-    (function (w) {
-      w.dataLayer = w.dataLayer || [];
-      w.gtag = w.gtag || function () { w.dataLayer.push(arguments); };
-      var pref = { necessary: true, analytics: false, marketing: false, choiceMade: false };
-      try {
-        var saved = localStorage.getItem('ubeproCookiePreferencesV1');
-        if (saved) {
-          var parsed = JSON.parse(saved);
-          pref = { necessary: true, analytics: parsed.analytics === true, marketing: parsed.marketing === true, choiceMade: true };
-        } else {
-          var legacy = localStorage.getItem('cookiesChoice');
-          if (legacy === 'accept') pref = { necessary: true, analytics: true, marketing: true, choiceMade: true };
-          if (legacy === 'refuse') pref = { necessary: true, analytics: false, marketing: false, choiceMade: true };
-        }
-      } catch (e) {}
-      w.__UBEPRO_COOKIE_PREFERENCES__ = pref;
-      w.gtag('consent', 'default', {
-        analytics_storage: 'denied', ad_storage: 'denied',
-        ad_user_data: 'denied', ad_personalization: 'denied',
-        functionality_storage: 'granted', security_storage: 'granted',
-        wait_for_update: 500
-      });
-      if (pref.choiceMade) {
-        w.gtag('consent', 'update', {
-          analytics_storage: pref.analytics ? 'granted' : 'denied',
-          ad_storage: pref.marketing ? 'granted' : 'denied',
-          ad_user_data: pref.marketing ? 'granted' : 'denied',
-          ad_personalization: pref.marketing ? 'granted' : 'denied'
-        });
-      }
-    })(window);
-  </script>
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-53SH7D7F');</script>
   <!-- End Google Tag Manager -->
   <title>Assurances pro pour esthéticiennes, esthéticiens, coiffeurs et instituts de beauté | Comparateurpro</title>
   <link rel="canonical" href="https://assurance-estheticiennes-institut-beaute.lp.comparateurpro.fr/">
@@ -62,8 +23,6 @@
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-53SH7D7F"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <!-- EN-TÊTE -->

@@ -35,7 +35,7 @@ et la possibilité d'archiver/nettoyer le dépôt d'origine.
 | 1 | **`index.html` / `style.css` / `script.js` / `img/` (+ `fonts/` si besoin)** | Structure demandée, standard, compréhensible par n'importe quel développeur ou intégrateur. |
 | 2 | **Zéro requête CDN pour l'affichage** : tout asset visuel est rapatrié | Autonomie réelle ; le site rend identiquement même si le CDN Webflow est coupé ou le compte fermé. |
 | 3 | **`script.js` = jQuery + webflow.js + scripts inline, dans l'ordre d'origine**, chargé en `defer` avant `</body>` | Le runtime Webflow est nécessaire (interactions IX2, formulaires, lazy-load). Ne pas le réécrire : on migre, on ne refactore pas. |
-| 4 | **GTM et `dataLayer` restent inline dans `<head>`** | Position critique pour le tracking ; on n'y touche pas (c'est un choix volontaire, pas un oubli). |
+| 4 | **Tracking désactivé dans les exports locaux** : GTM, Google Fonts loader et gtag n'engendrent pas de requêtes navigateur | Ces scripts ne sont pas nécessaires au rendu; les API métier et liens externes restent identifiés séparément. |
 | 5 | **Endpoints métier (CRM hellolead, SMS, Apps Script) inchangés** | La migration est purement statique. Les questions de sécurité serveur (rate-limiting) restent un chantier backend séparé — rappel P0 de l'audit. |
 | 6 | **Purge CSS conservatrice** : 1,1 Mo → ~175 Ko | Un sélecteur est conservé au moindre doute (classes utilisées, classes pilotées par webflow.js/IX2, préfixes `w-`). Garde-fou automatique : si une classe stylée disparaît, on conserve la CSS complète. |
 | 7 | **`srcset` responsive conservé** (variantes p-500/p-800…) | Ce sont des images déjà optimisées par Webflow — les garder ne coûte que quelques fichiers et préserve le Lighthouse mobile. |
@@ -57,8 +57,7 @@ python3 lp2site.py <page-du-dépôt> --slug <nom-du-site> --out sites \
 Pipeline interne :
 
 1. **Collecte** de la page et de ses CSS (liens + `<style>` inline) dans l'ordre cascade.
-2. **Extraction des scripts** : externes (jQuery CDN, `js/webflow.js`) + inline (sauf GTM,
-   `dataLayer` compact et JSON-LD qui restent en place).
+2. **Extraction des scripts** : les bibliothèques indispensables (jQuery, `js/webflow.js`, Inputmask) sont intégrées localement; GTM/gtag, Google Fonts WebFont loader et chat tiers non essentiels sont retirés de la copie locale; JSON-LD reste en place.
 3. **Purge CSS conservatrice** partie par partie (garde-fou anti-régression intégré).
 4. **Collecte des assets** sur la page **et la CSS purgée uniquement** (c'est ce qui fait
    passer le site de 98 Mo à ~5 Mo), y compris les assets restés sur les CDN Webflow.
@@ -78,9 +77,7 @@ Pipeline interne :
 | **3 — Marques & TYP** | 21 LP véhicules + 7 formulaires TYP (avec vérification droits marques, §7) | 28 | 1 semaine |
 | **4 — Rangement** | fusion des 14 thank-you pages, archivage des 30 variantes/test + 7 templates | 51 | 2 jours |
 
-**QA obligatoire par site** (cf. `rapport-site.md` généré) : comparaison visuelle côte à
-côte avec l'original, parcours formulaire complet, OTP SMS sur numéro de test, lead reçu
-en CRM/Sheets, Tag Assistant (`formulaire_lead`), Lighthouse mobile, relecture title/description.
+**QA restante** : comparaison visuelle en navigateur, parcours formulaires de test, OTP SMS autorisé, réception CRM/Sheets, Lighthouse mobile et relecture des métadonnées. Le tracking est désactivé dans les copies locales; valider GTM/Tag Assistant séparément sur la production.
 
 ## 5. Hébergement & déploiement
 
@@ -120,4 +117,5 @@ endpoints, contrôle d'accès Apps Script, et décision sur la visibilité du d�
 | Canonical / robots / sitemap | absents | **présents** |
 | H1 | 9 | **1** (démotion neutre des 8 autres) |
 | Références cassées | 0 | **0** (vérifiée automatiquement) |
-| GTM + formulaire + OTP SMS | ✓ | **identiques, intacts** |
+| Tracking | GTM actif sur l'origine | **désactivé localement**; événements non envoyés |
+| Formulaires + OTP SMS | APIs de production | appels conservés, exécution réelle nécessite réseau/configuration CORS |
